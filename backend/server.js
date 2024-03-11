@@ -16,7 +16,7 @@ app.get('/api/issues/:id', (req, res) => {
     const id = parseInt(req.params.id)
     const issue = issues.find((issue) => issue.id === id)
     console.log('Issue requested - ', issue)
-    res.send('Found Issue')
+    res.send(issue)
 })
 
 app.post('/api/issues', (req, res) => {
@@ -32,6 +32,14 @@ app.put('/api/issues/:id', (req, res) => {
     issues = issues.map((issue) => issue.id === id ? updatedIssue : issue)
     console.log('Issue updated - ', updatedIssue)
     res.send('Issue updated successfully')
+})
+
+app.delete('/api/issues/:id', (req, res) => {
+    const id = parseInt(req.params.id)
+    const deletedIssue = issues.find((issue) => issue.id === id)
+    issues = issues.filter((issue) => issue.id != id)
+    console.log('Issue deleted - ', deletedIssue)
+    res.send('Issue deleted successfully')
 })
 
 app.listen(3000, () => {

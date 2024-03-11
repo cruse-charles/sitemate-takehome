@@ -12,6 +12,13 @@ app.get('/api/issues', (req, res) => {
     res.json(issues)
 })
 
+app.get('/api/issues/:id', (req, res) => {
+    const id = parseInt(req.params.id)
+    const issue = issues.find((issue) => issue.id === id)
+    console.log('Issue requested - ', issue)
+    res.send('Found Issue')
+})
+
 app.post('/api/issues', (req, res) => {
     const newIssue = req.body;
     issues.push(newIssue)
@@ -20,7 +27,7 @@ app.post('/api/issues', (req, res) => {
 })
 
 app.put('/api/issues/:id', (req, res) => {
-    const {id} = parseInt(req.params)
+    const id = parseInt(req.params.id)
     const updatedIssue = req.body
     issues = issues.map((issue) => issue.id === id ? updatedIssue : issue)
     console.log('Issue updated - ', updatedIssue)

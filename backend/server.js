@@ -28,19 +28,10 @@ app.get('/api/issues/:id', (req, res) => {
 })
 
 app.post('/api/issues', (req, res) => {
-    try {
         const newIssue = req.body;
-        if (!newIssue || newIssue.title || newIssue.description) {
-            res.status(400).send('Missing title or description')
-        } else {
-            issues.push(newIssue)
-            console.log('New issue created - ', newIssue)
-            res.send('Issue created successfully')
-        }
-    } catch (error) {
-        console.error(error.message)
-        res.status(500).json({message: error.message})
-    }
+        res.send('Issue created successfully')
+        issues.push(newIssue)
+        console.log('New issue created - ', newIssue)
 })
 
 app.put('/api/issues/:id', (req, res) => {
@@ -72,7 +63,7 @@ app.delete('/api/issues/:id', (req, res) => {
         if (!existingIssue) {
             res.status(404).send('Issue not found')
         }
-        
+
         const deletedIssue = issues.find((issue) => issue.id === id)
         issues = issues.filter((issue) => issue.id != id)
         console.log('Issue deleted - ', deletedIssue)

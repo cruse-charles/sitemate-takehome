@@ -11,6 +11,7 @@ let issues = [
 ]
 
 app.get('/api/issues', (req, res) => {
+    console.log('Issues - ', issues)
     res.json(issues)
 })
 

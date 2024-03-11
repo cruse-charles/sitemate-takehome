@@ -15,11 +15,17 @@ app.get('/api/issues', (req, res) => {
 app.post('/api/issues', (req, res) => {
     const newIssue = req.body;
     issues.push(newIssue)
-    console.log('New issue created', newIssue)
+    console.log('New issue created - ', newIssue)
     res.send('Issue created successfully')
 })
 
-
+app.put('/api/issues/:id', (req, res) => {
+    const {id} = parseInt(req.params)
+    const updatedIssue = req.body
+    issues = issues.map((issue) => issue.id === id ? updatedIssue : issue)
+    console.log('Issue updated - ', updatedIssue)
+    res.send('Issue updated successfully')
+})
 
 app.listen(3000, () => {
     console.log('Server Running...')

@@ -6,6 +6,7 @@ import './App.css'
 function App() {
   const [issues, setIssues] = useState([])
   const [newIssue, setNewIssue] = useState({ title: '', description: '' })
+  const [successMessage, setSuccessMessage] = useState('')
 
   const fetchIssues = async () => {
     const response = await axios.get('http://localhost:5000/api/issues')
@@ -27,16 +28,20 @@ function App() {
     await axios.post('http://localhost:5000/api/issues', newIssueWithId)
     setNewIssue({ title: '', description: '' })
     fetchIssues()
+    setSuccessMessage('You have successfully created an issue.')
   }
 
   const handleDelete = async (id) => {
     await axios.delete(`http://localhost:5000/api/issues/${id}`)
     fetchIssues()
+    setSuccessMessage('You have successfully deleted an issue.')
+
   }
 
   return (
     <>
       <h1>Current Issues</h1>
+      <h4 id='success-message'>{successMessage}</h4>
       {issues.map((issue) => (
         <div key={issue.id}>
           <span>{issue.id} - {issue.title} - {issue.description}</span>

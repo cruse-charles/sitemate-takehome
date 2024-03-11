@@ -16,33 +16,72 @@ app.get('/api/issues', (req, res) => {
 })
 
 app.get('/api/issues/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const issue = issues.find((issue) => issue.id === id)
-    console.log('Issue requested - ', issue)
-    res.send(issue)
+    try {
+        const id = parseInt(req.params.id)
+        const issue = issues.find((issue) => issue.id === id)
+        console.log('Issue requested - ', issue)
+        res.send(issue)
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
 })
 
 app.post('/api/issues', (req, res) => {
-    const newIssue = req.body;
-    issues.push(newIssue)
-    console.log('New issue created - ', newIssue)
-    res.send('Issue created successfully')
+    try {
+        const newIssue = req.body;
+        if (!newIssue || newIssue.title || newIssue.description) {
+            res.status(400).send('Missing title or description')
+        } else {
+            issues.push(newIssue)
+            console.log('New issue created - ', newIssue)
+            res.send('Issue created successfully')
+        }
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
 })
 
 app.put('/api/issues/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const updatedIssue = req.body
-    issues = issues.map((issue) => issue.id === id ? updatedIssue : issue)
-    console.log('Issue updated - ', updatedIssue)
-    res.send('Issue updated successfully')
+
+    try {
+        const id = parseInt(req.params.id)
+        const updatedIssue = req.body
+    
+        const existingIssue = issues.find((issue) => issue.id === id)
+        if (!existingIssue) {
+            res.status(404).send('Issue not found')
+        } else {
+            issues = issues.map((issue) => issue.id === id ? updatedIssue : issue)
+            console.log('Issue updated - ', updatedIssue)
+            res.send('Issue updated successfully')
+        }
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
 })
 
 app.delete('/api/issues/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const deletedIssue = issues.find((issue) => issue.id === id)
-    issues = issues.filter((issue) => issue.id != id)
-    console.log('Issue deleted - ', deletedIssue)
-    res.send('Issue deleted successfully')
+
+    try {
+        const id = parseInt(req.params.id)
+
+        const existingIssue = issues.find((issue) => issue.id === id);
+        if (!existingIssue) {
+            res.status(404).send('Issue not found')
+        }
+        
+        const deletedIssue = issues.find((issue) => issue.id === id)
+        issues = issues.filter((issue) => issue.id != id)
+        console.log('Issue deleted - ', deletedIssue)
+        res.send('Issue deleted successfully')
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+
 })
 
 app.listen(5000, () => {

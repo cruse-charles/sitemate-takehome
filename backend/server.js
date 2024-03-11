@@ -12,6 +12,15 @@ app.get('/api/issues', (req, res) => {
     res.json(issues)
 })
 
+app.post('/api/issues', (req, res) => {
+    const newIssue = req.body;
+    issues.push(newIssue)
+    console.log('New issue created', newIssue)
+    res.send('Issue created successfully')
+})
+
+
+
 app.listen(3000, () => {
     console.log('Server Running...')
 })

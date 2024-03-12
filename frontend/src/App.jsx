@@ -6,7 +6,7 @@ import './App.css'
 
 function App() {
   const [issues, setIssues] = useState([])
-  const [successMessage, setSuccessMessage] = useState('')
+  const [message, setMessage] = useState('')
   const [editMode, setEditMode] = useState(false)
   const [selectedIssue, setSelectedIssue] = useState(null)
 
@@ -20,15 +20,19 @@ function App() {
   }, [])
 
   const handleCreateIssue = async (newIssue) => {
-    const maxId = issues.reduce((max, issue) => {
-      return issue.id > max ? issue.id : max;
-    }, 0)
+    try {
+      const maxId = issues.reduce((max, issue) => {
+        return issue.id > max ? issue.id : max;
+      }, 0)
 
-    const id = maxId + 1
-    const newIssueWithId = { id, ...newIssue }
-    await axios.post('http://localhost:5000/api/issues', newIssueWithId)
-    fetchIssues()
-    setSuccessMessage('You have successfully created an issue.')
+      const id = maxId + 1
+      const newIssueWithId = { id, ...newIssue }
+      await axios.post('http://localhost:5000/api/issues', newIssueWithId)
+      fetchIssues()
+      setMessage('You have successfully created an issue.')
+    } catch (error) {
+      setMessage(error.response.data)
+    }
   }
 
   const handleEditButtonClick = (issue) => {
@@ -37,22 +41,28 @@ function App() {
   }
 
   const handleEditIssue = async (editedIssue) => {
-    await axios.put(`http://localhost:5000/api/issues/${editedIssue.id}`, editedIssue)
-    fetchIssues()
-    setEditMode(false)
-    setSuccessMessage('You have successfully updated an issue.');
+    try {
+      await axios.put(`http://localhost:5000/api/issues/${editedIssue.id}`, editedIssue)
+      fetchIssues()
+      setEditMode(false)
+      setMessage('You have successfully updated an issue.');
+    } catch (error) {
+      setMessage(error.response.data)
+    }
+
+
   }
 
   const handleDelete = async (id) => {
     await axios.delete(`http://localhost:5000/api/issues/${id}`)
     fetchIssues()
-    setSuccessMessage('You have successfully deleted an issue.')
+    setMessage('You have successfully deleted an issue.')
   }
 
   return (
     <>
       <h1>Current Issues</h1>
-      <h4 id='success-message'>{successMessage}</h4>
+      <h4 id='message'>{message}</h4>
       {issues.map((issue) => (
         <div key={issue.id}>
           <span>{issue.id} - {issue.title} - {issue.description}</span>

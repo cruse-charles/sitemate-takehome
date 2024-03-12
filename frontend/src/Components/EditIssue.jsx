@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 
-const EditIssue = ({ onSubmit }) => {
-    const [newIssue, setNewIssue] = useState({ title: '', description: '' });
+const EditIssue = ({ issue, onSubmit }) => {
+    const [editedIssue, setEditedIssue] = useState(issue);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setEditedIssue(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        onSubmit(newIssue)
-        setNewIssue({ title: '', description: '' })
+        e.preventDefault();
+        onSubmit(editedIssue);
     }
 
     return (
@@ -15,19 +22,20 @@ const EditIssue = ({ onSubmit }) => {
             <form onSubmit={handleSubmit}>
                 <input
                     placeholder='Title'
-                    value={newIssue.title}
-                    onChange={(e) => setNewIssue({ ...newIssue, title: e.target.value })}
+                    name="title"
+                    value={editedIssue.title}
+                    onChange={handleChange}
                 />
                 <input
                     placeholder="Description"
-                    value={newIssue.description}
-                    onChange={(e) => setNewIssue({ ...newIssue, description: e.target.value })}
+                    name="description"
+                    value={editedIssue.description}
+                    onChange={handleChange}
                 />
-                <button type="submit">Create Issue</button>
+                <button type="submit">Confirm</button>
             </form>
         </>
-
-    )
+    );
 }
 
 export default EditIssue;

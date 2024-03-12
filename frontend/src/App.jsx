@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import CreateIssue from './Components/CreateIssue'
+import EditIssue from './Components/EditIssue'
 import './App.css'
 
 function App() {
   const [issues, setIssues] = useState([])
   const [successMessage, setSuccessMessage] = useState('')
+  const [editMode, setEditMode] = useState(false)
+  const [selectedIssue, setSelectedIssue] = useState(null)
 
   const fetchIssues = async () => {
     const response = await axios.get('http://localhost:5000/api/issues')
@@ -28,11 +31,22 @@ function App() {
     setSuccessMessage('You have successfully created an issue.')
   }
 
+  const handleEditButtonClick = (issue) => {
+    setSelectedIssue(issue);
+    setEditMode(true)
+  }
+
+  const handleEditIssue = async (editedIssue) => {
+    await axios.put(`http://localhost:5000/api/issues/${editedIssue.id}`, editedIssue)
+    fetchIssues()
+    setEditMode(false)
+    setSuccessMessage('You have successfully updated an issue.');
+  }
+
   const handleDelete = async (id) => {
     await axios.delete(`http://localhost:5000/api/issues/${id}`)
     fetchIssues()
     setSuccessMessage('You have successfully deleted an issue.')
-
   }
 
   return (
@@ -42,11 +56,13 @@ function App() {
       {issues.map((issue) => (
         <div key={issue.id}>
           <span>{issue.id} - {issue.title} - {issue.description}</span>
-          <button>Edit</button>
+          <button onClick={() => handleEditButtonClick(issue)}>Edit</button>
           <button onClick={() => handleDelete(issue.id)}>Delete</button>
         </div>
       ))}
-      <CreateIssue onSubmit={handleCreateIssue} />
+      {editMode ? <EditIssue issue={selectedIssue} onSubmit={handleEditIssue} /> : <CreateIssue onSubmit={handleCreateIssue} />}
+
+
     </>
   )
 }

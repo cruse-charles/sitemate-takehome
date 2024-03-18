@@ -1,1 +1,3 @@
 Project for take home challenge for Sitemate.
+
+To start the application, please cd into the root directory and run 'npm start'. Then, in another terminal, cd into the frontend folder and run 'npm run dev'. You can then go to the local link provided from the frontend terminal (http://localhost:####/). Both these servers must be running simultaneously. Open a web browser with the link provided and you can now use my application.

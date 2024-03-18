@@ -28,31 +28,49 @@ app.get('/api/issues/:id', (req, res) => {
 })
 
 app.post('/api/issues', (req, res) => {
+    try {
         const newIssue = req.body;
-        res.send('Issue created successfully')
-        issues.push(newIssue)
-        console.log('New issue created - ', newIssue)
+        const {title, description} = newIssue
+
+        if (!title || !description) {
+            res.status(400).send('Missing title or description')
+        } else {
+            issues.push(newIssue)
+            console.log('New issue created - ', newIssue)
+            res.send('Issue created successfully')
+        }
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal Server Error')
+    }
+
 })
 
 app.put('/api/issues/:id', (req, res) => {
-
     try {
-        const id = parseInt(req.params.id)
-        const updatedIssue = req.body
-    
-        const existingIssue = issues.find((issue) => issue.id === id)
+        const id = parseInt(req.params.id);
+        const updatedIssue = req.body;
+
+        const existingIssue = issues.find((issue) => issue.id === id);
         if (!existingIssue) {
-            res.status(404).send('Issue not found')
-        } else {
-            issues = issues.map((issue) => issue.id === id ? updatedIssue : issue)
-            console.log('Issue updated - ', updatedIssue)
-            res.send('Issue updated successfully')
+            res.status(404).send('Issue not found');
+            return;
         }
+
+        if (!updatedIssue.title || !updatedIssue.description) {
+            res.status(400).send('Title and description are required');
+            return;
+        }
+
+        issues = issues.map((issue) => (issue.id === id ? updatedIssue : issue));
+        console.log('Issue updated - ', updatedIssue);
+        res.send('Issue updated successfully');
     } catch (error) {
-        console.error(error.message)
-        res.status(500).json({message: error.message})
+        console.error(error.message);
+        res.status(500).json({ message: error.message });
     }
-})
+});
 
 app.delete('/api/issues/:id', (req, res) => {
 
